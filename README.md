@@ -1,2 +1,2 @@
 # TGCtunes
-A discord bot that plays music, because freedom!
+A Discord bot that plays music from YouTube, because freedom!
