@@ -3,11 +3,12 @@ from discord import FFmpegPCMAudio
 from youtube_dl import YoutubeDL
 from discord.ext import commands
 import asyncio
-import keep_alive
+import random
+import os
 
 
 # Load the token from ./token.txt
-# If ./token.txt does not exist, gives a nice error message.
+# If ./token.txt does not exist, gives a nice error message!
 try:
     token = ""
     with open("token.txt") as f:
@@ -16,8 +17,14 @@ except FileNotFoundError:
     print("Error: ./token.txt was not found. The bot cannot be started.")
     exit()
 
-YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True' , 'default-search':'ytsearch'}
+YDL_OPTIONS    = {'format': 'bestaudio', 'noplaylist':'True' , 'default-search':'ytsearch'}
 FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1', 'options': '-vn'}        
+
+grubs    = ["Pizza", "Burger", "Fries", "Hotdogs", "Icecream", "Donuts", "Ass", "Brisket", "Sushi", "Pho", "Chicken", "Shwarma", "Taco", "Spaghetti", "Kielbasa"]
+adjs     = ["Gourmet", "Stinky", "Nasty", "Scrumptious", "Tasty", "Bloody", "Burnt", "Well-Prepared", "Uncooked", "RAW", "Yummy", "Doubley-Good", "Spicy", "Sweet", "Tangy", "Sour", "FLAMIN HOT","Bland"] 
+rarities = ["Common","Uncommon","Rare","Epic","Legendary","Mystic"]
+weights  = [49,25,15,6,4,1]
+sheaders = ["Enjoy your grub!","Grub: eat it.","CONSUME GRUB.","Grub is the basic building block of all life.","One day, we will all be one with Grub."]
 
 class Music(commands.Cog):
     def __init__(self, bot):
@@ -76,6 +83,46 @@ class Music(commands.Cog):
             asyncio.create_task(  self.sendEmbed(ctx,'Paused',"Music in "+ctx.author.voice.channel.name+" was paused.",16741788)  )
             self.voice.pause()
             self.paused = True
+    
+class Funnies(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+    
+    @commands.command()
+    async def grubplease(self, ctx):
+        channel = ctx.channel
+        rarity = random.choices(rarities,weights)[0]
+        generated = rarity + " " + adjs[random.randint(0, len(adjs)-1)] + " " + grubs[random.randint(0, len(grubs)-1)]
+        subheader = sheaders[random.randint(0, len(sheaders)-1)] + "\n\n" + rarity + "\n" + str(weights[rarities.index(rarity)]) + "% chance."
+
+        if rarity == "Common":
+            color = 13553358
+        elif rarity == "Uncommon":
+            color = 52736
+        elif rarity == "Rare":
+            color = 206
+        elif rarity == "Epic":
+            color = 13500622
+        elif rarity == "Legendary":
+            color = 16764416
+        elif rarity == "Mystic":
+            color = 8355839
+
+
+        embed = discord.Embed(
+            title = generated,
+            description = subheader,
+            colour = color
+        )
+
+
+        await channel.send(embed=embed)
+    
+    @commands.command()
+    async def troll(self, ctx):
+        channel = ctx.channel
+        await channel.send("https://upload.wikimedia.org/wikipedia/en/9/9a/Trollface_non-free.png")
+
 
 bot = commands.Bot(command_prefix=("$"))
 
@@ -84,4 +131,5 @@ async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user))
 
 bot.add_cog(Music(bot))
+bot.add_cog(Funnies(bot))
 bot.run(token)
