@@ -31,6 +31,7 @@ class Music(commands.Cog):
         self.voice = None
         self.paused = False
         self.queue = []
+        self.looping = False
 
     async def msg(self,ctx,input):
         channel = ctx.channel
@@ -54,6 +55,17 @@ class Music(commands.Cog):
         await channel.connect()
 
     @commands.command()
+    async def removequeue(self, ctx, *,input):
+        self.queue.pop(int(input)-1)
+
+    @commands.command()
+    async def tloop(self, ctx):
+        if self.looping:
+            self.looping = False
+        else:
+            self.looping = True
+
+    @commands.command()
     async def play(self, ctx, *,input):
         asyncio.create_task(self.join(ctx))
 
@@ -68,7 +80,7 @@ class Music(commands.Cog):
         asyncio.create_task(  self.sendEmbed(ctx,video_title,"Queue position "+str(len(self.queue))+" on: "+ctx.author.voice.channel.name,16741788)  )
 
         def after():
-            if (len(self.queue) <= 1):
+            if (len(self.queue) <= 1 or not self.looping):
                 self.queue.pop()
             if len(self.queue) != 1:
                 self.voice.play(source=self.queue[-1], after=lambda _:(after()))
