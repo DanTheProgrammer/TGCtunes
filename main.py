@@ -65,7 +65,7 @@ class Music(commands.Cog):
         title = video_title = info['entries'][0]['title']
         asyncio.create_task(  self.sendEmbed(ctx,video_title,"Queued to: "+ctx.author.voice.channel.name,16741788)  )
 
-        self.voice.play(source=FFmpegPCMAudio(URL, **FFMPEG_OPTIONS),  after=lambda _: await self.voice.disconnect())
+        self.voice.play(source=FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda _: self.voice.disconnect())
 
     @commands.command()
     async def leave(self, ctx):
