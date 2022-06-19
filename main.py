@@ -54,7 +54,7 @@ class Music(commands.Cog):
         await channel.connect()
 
     @commands.command()
-    async def removequeue(self, ctx, *,input):
+    async def rq(self, ctx, *,input):
         self.queue.pop(int(input)-1)
 
     @commands.command()
