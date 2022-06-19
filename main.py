@@ -67,8 +67,12 @@ class Music(commands.Cog):
         self.queue.append(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
         asyncio.create_task(  self.sendEmbed(ctx,video_title,"Queue position "+str(len(self.queue))+" on: "+ctx.author.voice.channel.name,16741788)  )
 
+        def after():
+            self.queue.pop()
+            self.voice.play(source=self.queue[-1], after=lambda _:(after()))
+
         if(self.voice.is_playing() != True):
-            self.voice.play(source=self.queue[-1], after=lambda _:(self.queue.pop()))
+            self.voice.play(source=self.queue[-1], after=lambda _:(after()))
 
     @commands.command()
     async def leave(self, ctx):
