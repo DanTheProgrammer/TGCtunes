@@ -68,7 +68,7 @@ class Music(commands.Cog):
         async def afterFunc(ctx):
             await self.voice.disconnect()
         
-        self.voice.play(source=FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=asyncio.create_task(afterFunc))
+        self.voice.play(source=FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda _:asyncio.create_task(afterFunc))
 
     @commands.command()
     async def leave(self, ctx):
