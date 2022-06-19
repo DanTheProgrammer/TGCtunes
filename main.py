@@ -30,6 +30,7 @@ class Music(commands.Cog):
         self.bot = bot
         self.voice = None
         self.paused = False
+        self.queue = []
 
     async def msg(self,ctx,input):
         channel = ctx.channel
@@ -63,10 +64,11 @@ class Music(commands.Cog):
         URL = info['entries'][0]['formats'][0]['url']
         
         title = video_title = info['entries'][0]['title']
-        asyncio.create_task(  self.sendEmbed(ctx,video_title,"Queued to: "+ctx.author.voice.channel.name,16741788)  )
+        self.queue.append(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
+        asyncio.create_task(  self.sendEmbed(ctx,video_title,"Queue position "+str(len(self.queue))+" on: "+ctx.author.voice.channel.name,16741788)  )
 
-        
-        self.voice.play(source=FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda _:(await self.voice.disconnect()).__anext__())
+        if(self.voice.is_playing() != True):
+            self.voice.play(source=self.queue[-1], after=lambda _:(self.queue.pop()))
 
     @commands.command()
     async def leave(self, ctx):
