@@ -46,7 +46,6 @@ class Music(commands.Cog):
 
         await ctx.send(embed = embed)
         
-    
     @commands.command()
     async def join(self, ctx):
         channel = ctx.author.voice.channel
@@ -80,7 +79,7 @@ class Music(commands.Cog):
         asyncio.create_task(  self.sendEmbed(ctx,video_title,"Queue position "+str(len(self.queue))+" on: "+ctx.author.voice.channel.name,16741788)  )
 
         def after():
-            if (len(self.queue) <= 1 or not self.looping):
+            if (len(self.queue) <= 1 and not self.looping):
                 self.queue.pop()
             if len(self.queue) != 1:
                 self.voice.play(source=self.queue[-1], after=lambda _:(after()))
