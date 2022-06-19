@@ -68,10 +68,8 @@ class Music(commands.Cog):
         asyncio.create_task(  self.sendEmbed(ctx,video_title,"Queue position "+str(len(self.queue))+" on: "+ctx.author.voice.channel.name,16741788)  )
 
         def after():
-            if (len(self.queue) != 0):
+            if (len(self.queue) <= 1):
                 self.queue.pop()
-            else:
-                return
             if len(self.queue) != 1:
                 self.voice.play(source=self.queue[-1], after=lambda _:(after()))
             else:
