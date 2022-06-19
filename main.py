@@ -6,7 +6,6 @@ import asyncio
 import random
 import os
 
-
 # Load the token from ./token.txt
 # If ./token.txt does not exist, gives a nice error message!
 try:
@@ -62,11 +61,11 @@ class Music(commands.Cog):
         with YoutubeDL(YDL_OPTIONS) as ydl:
             info = ydl.extract_info("ytsearch:"+input, download=False)
         URL = info['entries'][0]['formats'][0]['url']
-
+        
         title = video_title = info['entries'][0]['title']
-        asyncio.create_task(  self.sendEmbed(ctx,video_title,"Now playing in: "+ctx.author.voice.channel.name,16741788)  )
+        asyncio.create_task(  self.sendEmbed(ctx,video_title,"Queued to: "+ctx.author.voice.channel.name,16741788)  )
 
-        self.voice.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
+        self.voice.play(source=FFmpegPCMAudio(URL, **FFMPEG_OPTIONS),  after=lambda _: await self.voice.disconnect())
 
     @commands.command()
     async def leave(self, ctx):
